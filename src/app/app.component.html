@@ -1,0 +1,113 @@
+<div class="dashboard" style="display: flex; flex-direction: row; height: 100vh; width: 100vw; overflow: hidden;">
+  <div class="controls" style="width: 350px; padding: 20px; border-left: 1px solid #ccc; background-color: #f9f9f9;">
+    <h3>Sensor Settings</h3>
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Moment of inertia for the quartz and coil assembly.">
+        Inertia Moment: {{ localIdentity.inertiaMoment | number:'1.8-8' }} kg·m²
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.inertia.min" [max]="limits.inertia.max" [step]="limits.inertia.step"
+            [(ngModel)]="localIdentity.inertiaMoment" (input)="updateChart()">
+    </div>
+
+    <hr>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Constant Damping (a): Static friction.">
+        Damping (a): {{ localIdentity.dampingPolynomial[0] | number:'1.3-3' }}
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.dampingA.min" [max]="limits.dampingA.max" [step]="limits.dampingA.step"
+            [(ngModel)]="localIdentity.dampingPolynomial[0]" (input)="updateChart()">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Viscous Damping (b): Velocity-proportional.">
+        Damping (b): {{ localIdentity.dampingPolynomial[1] | number:'1.5-5' }}
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.dampingB.min" [max]="limits.dampingB.max" [step]="limits.dampingB.step"
+            [(ngModel)]="localIdentity.dampingPolynomial[1]" (input)="updateChart()">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Aerodynamic Damping (c): Velocity-squared drag.">
+        Damping (c): {{ localIdentity.dampingPolynomial[2] | number:'1.7-7' }}
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.dampingC.min" [max]="limits.dampingC.max" [step]="limits.dampingC.step"
+            [(ngModel)]="localIdentity.dampingPolynomial[2]" (input)="updateChart()">
+    </div>
+    <h3 style="margin-top: 0;">Physical Design Settings</h3>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Ambient temperature in degrees Celsius; affects material properties and thermal noise.">
+        Temperature: {{ localIdentity.environmental.temperature }} °C
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.temperature.min" [max]="limits.temperature.max" [step]="limits.temperature.step"
+            [(ngModel)]="localIdentity.environmental.temperature" (input)="updateChart()">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="CTE: Rate of thermal expansion of the materials; affects mechanical stress and bias drift.">
+        Thermal Expansion: {{ (localIdentity.environmental.thermalExpansion * 1000000) | number:'1.1-1' }} ppm/°C
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.thermalExpansion.min" [max]="limits.thermalExpansion.max" [step]="limits.thermalExpansion.step"
+            [(ngModel)]="localIdentity.environmental.thermalExpansion" (input)="updateChart()">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Stiffness constant (k) of the suspension; directly affects scale factor and resonance.">
+        Spring Stiffness: {{ localIdentity.environmental.springStiffness }} N/m
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.springStiffness.min" [max]="limits.springStiffness.max" [step]="limits.springStiffness.step"
+            [(ngModel)]="localIdentity.environmental.springStiffness" (input)="updateChart()">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label class="info-tooltip" data-tooltip="Strength of the external magnetic field in Tesla; influences the coil-based force feedback.">
+        Magnetic Field: {{ localIdentity.environmental.magneticField }} T
+      </label>
+      <input type="range" style="width: 100%;" 
+            [min]="limits.magneticField.min" [max]="limits.magneticField.max" [step]="limits.magneticField.step"
+            [(ngModel)]="localIdentity.environmental.magneticField" (input)="updateChart()">
+    </div>
+
+    <div class="metrics-panel" style="padding: 15px; background: #fdfdfd; border: 1px solid #ddd; border-radius: 8px; margin-top: 20px;">
+      <h4 style="margin-top: 0;">Performance Metrics</h4>
+      
+      <div class="metric-row" style="margin-bottom: 10px;">
+        <span class="info-tooltip" 
+              data-tooltip="Bias: The inherent offset error in the sensor. It indicates the output signal when no acceleration is applied.">
+          <strong>Bias:</strong> {{ performanceMetrics.bias | number:'1.4-4' }} g
+        </span>
+      </div>
+
+      <div class="metric-row">
+        <span class="info-tooltip" 
+              data-tooltip="Scale Factor: The sensitivity of the sensor. It is the ratio of the output signal to the actual input acceleration.">
+          <strong>Scale Factor (SF):</strong> {{ performanceMetrics.sf | number:'1.4-4' }} V/g
+        </span>
+      </div>
+
+      <div class="metric-row" style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
+        <strong>Resonance Frequency:</strong> 
+        <span style="color: #007bff; font-weight: bold;">{{ resonanceFrequency | number:'1.1-1' }} Hz</span>
+      </div>
+      
+    </div>
+
+    <button style="margin-top: 15px" mat-raised-button color="primary" (click)="openPhysicsDialog()">
+      Physics Info
+    </button>
+
+  </div>
+  
+  <div style="flex-grow: 1; padding: 20px;">
+    <div echarts [options]="chartOptions" style="height: 100%; width: 100%;"></div>
+  </div>
+  
+</div>

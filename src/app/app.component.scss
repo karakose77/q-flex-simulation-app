@@ -1,0 +1,57 @@
+/* Arayüzün tam ekran oturması için */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.controls {
+  flex-shrink: 0; // Ayarlar panelinin genişliğinin sabit kalmasını sağlar
+}
+
+.info-tooltip {
+  position: relative;
+  cursor: help;
+  text-decoration: underline dotted;
+  font-weight: bold; // Yazıyı belirginleştirir
+
+  // Tooltip kutusunun kendisi
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 130%; // Ortalamak için
+    transform: translateX(-50%); // Tam merkezleme
+    top: 130%; // Yazının biraz altına
+    
+    // Stil Ayarları
+    background-color: #fdf6e3; // Krem rengi
+    color: #000;              // Siyah yazı
+    padding: 10px 15px;       // Daha büyük boşluklar
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;       // Yumuşak köşeler
+    font-size: 14px;          // Yazı boyutu
+    font-weight: normal;
+    white-space: normal;      // Yazının kutu içine sığması için
+    width: 250px;             // Kutu genişliği
+    line-height: 1.4;
+    
+    // Animasyon ve Görünürlük
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); // Hafif gölge efekti
+    max-width: calc(100vw - 400px);
+  }
+
+  // Hover olduğunda görünürlük
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}

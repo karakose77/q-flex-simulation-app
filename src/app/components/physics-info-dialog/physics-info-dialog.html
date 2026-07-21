@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Physics Behind the Simulation</h2>
+<mat-dialog-content>
+  <p>This simulation is based on a <strong>2nd-order Mass-Spring-Damper</strong> model representing the sensor's suspension system.</p>
+  <ul>
+    <li><strong>Equation of Motion:</strong> The system's frequency response is calculated via its transfer function: <code>H(s) = 1 / (m*s^2 + c*s + k)</code></li>
+    <li><strong>Impact of Stiffness:</strong> Increasing the spring stiffness (k) shifts the system's resonant frequency toward higher frequencies.</li>
+    <li><strong>Cut-off Frequency:</strong> The -3dB point on the graph marks the effective bandwidth limit.</li>
+  </ul>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
